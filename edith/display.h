@@ -27,6 +27,8 @@ Brightness_t display_brightness;
 
 void display_setup();
 void display_loop();
+void draw_square(int x, int y, int r);
+void clear_frame();
 
 void writeCommand(uint8_t command);
 void writeData(uint8_t data);
@@ -39,6 +41,10 @@ void Fill_RAM_CheckerBoard(void);
 void OLED_Init();
 void showImage(const uint8_t image[7][128]);
 void set_brightness(Brightness_t input);
-void display_custom();
+void display_frame();
+
+/* ~~~~~~~~~~ Variables ~~~~~~~~~~ */
+uint8_t frame[7][128];
+int square_x, square_y, square_r;
 
 #endif

@@ -3,6 +3,7 @@
 
 //#define SER_DEBUG
 
+
 void setup() {
 
   display_setup();

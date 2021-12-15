@@ -27,84 +27,31 @@ void display_setup(){
   set_brightness(dim);
   delay(100);
 
+  for(int i = 0; i < 7; i++){
+    for(int j = 0; j < 128; j++){
+      frame[i][j] = 0x11;
+    }
+  }
+
+  square_x = 64;
+  square_y = 28;
+  square_r = 7;
+
 }
 
 void display_loop(){
-    #ifdef SER_DEBUG
-    Serial.println("top of loop");
-  #endif // SER_DEBUG
 
-  // Put up our splash screen
-//  showImage(Splash);
-//  delay(1000);
+  clear_frame();
 
-//  Fill_RAM(0x01);
-//  delay(1000);
-//
-//  Fill_RAM(0x02);
-//  delay(1000);
+  if(square_r < 16){
+    square_r++;
+  } else {
+    square_r = 2;
+  }
 
-//  display_custom();
-//  delay(1000);
-
-  Fill_RAM(0x01);
-  delay(LOOP_DELAY);
-  Fill_RAM(0x02);
-  delay(LOOP_DELAY);
-  Fill_RAM(0x04);
-  delay(LOOP_DELAY);
-  Fill_RAM(0x08);
-  delay(LOOP_DELAY);
-  Fill_RAM(0x10);
-  delay(LOOP_DELAY);
-  Fill_RAM(0x20);
-  delay(LOOP_DELAY);
-  Fill_RAM(0x40);
-  delay(LOOP_DELAY);
-  Fill_RAM(0x80);
-  delay(LOOP_DELAY);
+  draw_square(square_x, square_y, square_r);
   
-//  //Demonstrate dimming
-//  writeCommand(0x81); // Set SEG Output Current
-//  writeCommand(0); // Set Contrast Control for Bank 0
-//  delay(1000);
-//
-//  Fill_RAM(0xff);
-//  delay(1000);
-//
-//  //Back to full brightness
-//  writeCommand(0x81); // Set SEG Output Current
-//  writeCommand(MAX_BRIGHT); // Set Contrast Control for Bank 0
-//  delay(500);
-//
-//  //Put up some demo screens
-//  Fill_RAM_CheckerBoard();
-//  delay(1000);
-//  showImage(Eagle);
-//  delay(2000);
-//  Fill_RAM(0x00);
-//  delay(500);
-//
-//
-//  //Put up the "aiming" mock-up
-//  showImage(Aiming);
-//  delay(3000);
-//
-//  //Finished
-//  Fill_RAM_CheckerBoard();
-//  delay(1000);
-
-  //showImage(SuperTank);
-  //delay(1000);
-
-//  Fill_RAM(0x00);
-//  delay(1500);
-//  Fill_RAM(0xff);
-//  delay(1500);
-//  Fill_RAM(0x0f);
-//  delay(1500);
-//  showImage(Splash);
-//  delay(3000);
+  display_frame();
 }
 
 void writeCommand(uint8_t command) {
@@ -290,9 +237,9 @@ void OLED_Init()
   Fill_RAM(0x00);     // Clear Screen
 
   writeCommand(0XAF); // Display On (0xAE/0xAF)
-  }
+}
 
-void showImage(const uint8_t image[7][128])
+void showImage(uint8_t image[7][128])
   {
   //The logo fits in the first 7 pages (7x8=56)
   for (uint8_t y = 0; y < 7; y++)
@@ -332,27 +279,45 @@ void set_brightness(Brightness_t input) {
   
 }
 
-void display_custom(){
-  uint8_t
-    page;
-  uint8_t
-    column;
-
-  for(page = 0; page < 8; page++)
-    {
-    Set_Start_Page(page);
+void display_frame(){
+  
+  //The logo fits in the first 7 pages (7x8=56)
+  for (uint8_t y = 0; y < 7; y++) {
+    // Set the starting page and column
+    Set_Start_Page(y);
     Set_Start_Column(0x00);
+    
+    for (uint8_t x = 0; x < 128; x++) {
+      writeData(frame[y][x]);
+    }
+  }
+  
+  //Clear the last page so stray pixels do not show in getter area.
+  Set_Start_Page(7);
+  Set_Start_Column(0x00);
+  
+  for (uint8_t x = 0; x < 128; x++) {
+    writeData(0x00);
+  }
+  
+}
 
-    for (column= 0; column < 128; column++)
-      {
-      if(0 == (column&0x01))
-        {
-        writeData(0x55);
-        }
-      else
-        {
-        writeData(0xAA);
-        }
+void draw_square(int x, int y, int r){
+  
+  for(int x_pos = 0; x_pos < 128; x_pos++){
+    for(int y_pos = 0; y_pos < 56; y_pos++){
+      if((x_pos > x-r) && (x_pos < x+r) && (y_pos > y-r) && (y_pos < y+r)){
+        frame[y_pos/8][x_pos] |= (0x01 << (y_pos % 8));
       }
     }
+  }
+    
+}
+
+void clear_frame(){
+  for(int i = 0; i < 7; i++){
+    for(int j = 0; j < 128; j++){
+      frame[i][j] = 0x00;
+    }
+  }
 }
