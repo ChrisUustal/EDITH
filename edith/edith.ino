@@ -3,7 +3,7 @@
 
 //#define SER_DEBUG
 unsigned long timer_ref;
-const unsigned long timer_offset = 40;
+const unsigned long timer_offset = 10;
 
 void setup() {
 

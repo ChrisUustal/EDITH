@@ -43,10 +43,10 @@ void display_loop(){
 
   clear_frame();
 
-  if(square_r < 16){
-    square_r++;
+  if(square_x < 128){
+    square_x += 2;
   } else {
-    square_r = 2;
+    square_x = 0;
   }
 
   draw_square(square_x, square_y, square_r);
