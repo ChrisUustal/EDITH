@@ -43,17 +43,13 @@ void display_loop(){
 
   clear_frame();
 
-//  if(square_x < 128){
-//    square_x += 2;
-//  } else {
-//    square_x = 0;
-//  }
-//
-//  draw_square(square_x, square_y, square_r);
-  if(display_on){
-    draw_rectangle(rect.x, rect.y, rect.w, rect.h);
+  if(square_x < 128){
+    square_x += 2;
+  } else {
+    square_x = 0;
   }
-  
+
+  draw_square(square_x, square_y, square_r);
   
   display_frame();
 }
@@ -316,16 +312,6 @@ void draw_square(int x, int y, int r){
     }
   }
     
-}
-
-void draw_rectangle(int x, int y, int w, int h){
-  for(int x_pos = 0; x_pos < 128; x_pos++){
-    for(int y_pos = 0; y_pos < 56; y_pos++){
-      if((x_pos > x) && (x_pos < x+w) && (y_pos > y) && (y_pos < y+h)){
-        frame[y_pos/8][x_pos] |= (0x01 << (y_pos % 8));
-      }
-    }
-  }
 }
 
 void clear_frame(){

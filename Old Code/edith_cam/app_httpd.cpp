@@ -57,7 +57,7 @@ httpd_handle_t stream_httpd = NULL;
 httpd_handle_t camera_httpd = NULL;
 
 static mtmn_config_t mtmn_config = {0};
-static int8_t detection_enabled = 1;
+static int8_t detection_enabled = 0;
 static int8_t recognition_enabled = 0;
 static int8_t is_enrolling = 0;
 static face_id_list id_list = {0};
@@ -149,8 +149,6 @@ static void draw_face_boxes(dl_matrix3du_t *image_matrix, box_array_t *boxes, in
         fb_gfx_drawFastHLine(&fb, x, y+h-1, w, color);
         fb_gfx_drawFastVLine(&fb, x, y, h, color);
         fb_gfx_drawFastVLine(&fb, x+w-1, y, h, color);
-        //X, Y, W, H
-        Serial.printf("%03d %03d %03d %03d \r\n", x, y, w, h);
 #if 0
         // landmark
         int x0, y0, j;
@@ -251,7 +249,7 @@ static esp_err_t capture_handler(httpd_req_t *req){
         }
         esp_camera_fb_return(fb);
         int64_t fr_end = esp_timer_get_time();
-        //Serial.printf("JPG: %uB %ums\n", (uint32_t)(fb_len), (uint32_t)((fr_end - fr_start)/1000));
+        Serial.printf("JPG: %uB %ums\n", (uint32_t)(fb_len), (uint32_t)((fr_end - fr_start)/1000));
         return res;
     }
 
@@ -285,10 +283,10 @@ static esp_err_t capture_handler(httpd_req_t *req){
             face_id = run_face_recognition(image_matrix, net_boxes);
         }
         draw_face_boxes(image_matrix, net_boxes, face_id);
-        dl_lib_free(net_boxes->score);
-        dl_lib_free(net_boxes->box);
-        dl_lib_free(net_boxes->landmark);
-        dl_lib_free(net_boxes);
+        free(net_boxes->score);
+        free(net_boxes->box);
+        free(net_boxes->landmark);
+        free(net_boxes);
     }
 
     jpg_chunking_t jchunk = {req, 0};
@@ -384,10 +382,10 @@ static esp_err_t stream_handler(httpd_req_t *req){
                                 }
                                 fr_recognize = esp_timer_get_time();
                                 draw_face_boxes(image_matrix, net_boxes, face_id);
-                                dl_lib_free(net_boxes->score);
-                                dl_lib_free(net_boxes->box);
-                                dl_lib_free(net_boxes->landmark);
-                                dl_lib_free(net_boxes);
+                                free(net_boxes->score);
+                                free(net_boxes->box);
+                                free(net_boxes->landmark);
+                                free(net_boxes);
                             }
                             if(!fmt2jpg(image_matrix->item, fb->width*fb->height*3, fb->width, fb->height, PIXFORMAT_RGB888, 90, &_jpg_buf, &_jpg_buf_len)){
                                 Serial.println("fmt2jpg failed");
@@ -438,13 +436,13 @@ static esp_err_t stream_handler(httpd_req_t *req){
         last_frame = fr_end;
         frame_time /= 1000;
         uint32_t avg_frame_time = ra_filter_run(&ra_filter, frame_time);
-//        Serial.printf("MJPG: %uB %ums (%.1ffps), AVG: %ums (%.1ffps), %u+%u+%u+%u=%u %s%d\n",
-//            (uint32_t)(_jpg_buf_len),
-//            (uint32_t)frame_time, 1000.0 / (uint32_t)frame_time,
-//            avg_frame_time, 1000.0 / avg_frame_time,
-//            (uint32_t)ready_time, (uint32_t)face_time, (uint32_t)recognize_time, (uint32_t)encode_time, (uint32_t)process_time,
-//            (detected)?"DETECTED ":"", face_id
-//        );
+        Serial.printf("MJPG: %uB %ums (%.1ffps), AVG: %ums (%.1ffps), %u+%u+%u+%u=%u %s%d\n",
+            (uint32_t)(_jpg_buf_len),
+            (uint32_t)frame_time, 1000.0 / (uint32_t)frame_time,
+            avg_frame_time, 1000.0 / avg_frame_time,
+            (uint32_t)ready_time, (uint32_t)face_time, (uint32_t)recognize_time, (uint32_t)encode_time, (uint32_t)process_time,
+            (detected)?"DETECTED ":"", face_id
+        );
     }
 
     last_frame = 0;

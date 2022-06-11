@@ -22,19 +22,12 @@
 /* ~~~~~~~~~~ Classes + Enums ~~~~~~~~~~ */
 enum Brightness_t {bright, dim};
 Brightness_t display_brightness;
-struct rectangle_t {
-  int x = 64;
-  int y = 28;
-  int w = 0;
-  int h = 0;
-} rect;
 
 /* ~~~~~~~~~~ Prototypes ~~~~~~~~~~ */
 
 void display_setup();
 void display_loop();
 void draw_square(int x, int y, int r);
-void draw_rectangle(int x, int y, int w, int h);
 void clear_frame();
 
 void writeCommand(uint8_t command);
@@ -53,6 +46,5 @@ void display_frame();
 /* ~~~~~~~~~~ Variables ~~~~~~~~~~ */
 uint8_t frame[7][128];
 int square_x, square_y, square_r;
-bool display_on = true;
 
 #endif
