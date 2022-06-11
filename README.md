@@ -18,13 +18,13 @@ ESP32-CAM - Does the camera and face recognition stuff
 1200mAh Battery - Lets me operate it wirelessly! 
 
 ### Pics
-![image info](./Pics/On_Person.png)
-![image info](./Pics/Top_View.png)
-![image info](./Pics/Back_View.png)
-![image info](./Pics/Side_View.png)
-![image info](./Pics/Quarter_View.png)
-![image info](./Pics/Lower_Quarter_view.png)
-![image info](./Pics/Front_View.png)
+![image info](./Pics/On_Person.jpg)
+![image info](./Pics/Top_View.jpg)
+![image info](./Pics/Back_View.jpg)
+![image info](./Pics/Side_View.jpg)
+![image info](./Pics/Quarter_View.jpg)
+![image info](./Pics/Lower_Quarter_view.jpg)
+![image info](./Pics/Front_View.jpg)
 
 ### Support
 No. Don't expect me to every update this or even respond to inquiries if you're trying to copy it. 
