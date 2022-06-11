@@ -23,7 +23,7 @@ ESP32-CAM - Does the camera and face recognition stuff
 ![image info](./Pics/Back_View.jpg)
 ![image info](./Pics/Side_View.jpg)
 ![image info](./Pics/Quarter_View.jpg)
-![image info](./Pics/Lower_Quarter_view.jpg)
+![image info](./Pics/Lower_Quarter_View.jpg)
 ![image info](./Pics/Front_View.jpg)
 
 ### Support
